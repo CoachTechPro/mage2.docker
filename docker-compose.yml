@@ -25,6 +25,7 @@ services:
     volumes:
       - app_data:/home/${USER}/html:delegated
       - php_socket:/var/run/php
+      - letsencrypt:/etc/letsencrypt
 
   php:
     container_name: ${NAMESPACE}_php_${PHP_VERSION_SET}
@@ -115,6 +116,7 @@ services:
     command: --interval 900
 
 volumes:
+  letsencrypt:
   php_socket:
   redis_data_socket:
   mysql_data:
