@@ -28,6 +28,7 @@ RUN apk add --no-cache --virtual build-dependencies \
         imagemagick \
         bc \
         procps \
+        yarn \
     && apk add --no-cache --virtual .php-deps \
         make \
     && apk add --no-cache --virtual .build-deps \

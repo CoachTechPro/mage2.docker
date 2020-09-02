@@ -106,11 +106,17 @@ magentoComposerJson() {
     else
         message "Magento 2 composer.json found"
         if [[ $4 == *"local"* ]]; then
-            message "docker exec -it -u $1 $2 composer install --no-interaction --no-suggest --no-scripts;"
-            docker exec -it -u $1 $2 composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts
+            message "docker exec -it -u $1 $2 composer install;"
+            docker exec -it -u $1 $2 composer install
+
+            message "docker exec -it -u $1 $2 composer update;"
+            docker exec -it -u $1 $2 composer update
         else
-            message "docker exec -it -u $1 $2 composer install --no-interaction --no-suggest --no-scripts --no-dev;"
+            message "docker exec -it -u $1 $2 composer install --no-dev;"
             docker exec -it -u $1 $2 composer install --no-interaction --optimize-autoloader --no-suggest --no-scripts --no-dev
+
+            message "docker exec -it -u $1 $2 composer update --no-dev;"
+            docker exec -it -u $1 $2 composer update --no-interaction --optimize-autoloader --no-suggest --no-scripts --no-dev
         fi
     fi
 }
@@ -272,6 +278,12 @@ permissionsSet() {
 
     message "docker exec -it $1 find var vendor pub/static pub/media app/etc -type f -exec chmod u+w {} \;"
     docker exec -it $1 find var vendor pub/static pub/media app/etc -type f -exec chmod u+w {} \;
+
+    message "docker exec -it $1 chown -R $2:$2 .;";
+    docker exec -it $1 chown -R $2:$2 .;
+
+    message "chown -R $2:$2 $3;"
+    chown -R $2:$2 $3;
 
     end=$(date +%s)
     runtime=$((end - start))
@@ -445,7 +457,7 @@ sampleDataInstall ${SAMPLE_DATA}
 magentoRefresh ${USER} ${NAMESPACE}_php_${PHP_VERSION_SET} ${SHOPURI} ${SAMPLE_DATA}
 productionModeOnLive ${USER} ${NAMESPACE}_php_${PHP_VERSION_SET} ${SHOPURI}
 getMagerun ${USER} ${NAMESPACE}_nginx ${SHOPURI}
-permissionsSet ${NAMESPACE}_nginx
+permissionsSet ${NAMESPACE}_nginx ${USER} ${WORKDIR}
 
 endAll=$(date +%s)
 runtimeAll=$((endAll - startAll))
